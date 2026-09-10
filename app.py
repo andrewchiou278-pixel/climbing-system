@@ -92,12 +92,12 @@ scopes = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-try:
-    # 嘗試讀取 Streamlit 雲端後台的秘密設定
+if "gcp_service_account" in st.secrets:
+    # 雲端環境：從 Streamlit Secrets 讀取
     creds_dict = dict(st.secrets["gcp_service_account"])
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
-except Exception:
-    # 如果在本地電腦執行，則讀取資料夾內的 credentials.json 檔案
+else:
+    # 本地環境：讀取資料夾內的 credentials.json 檔案
     creds = Credentials.from_service_account_file("credentials.json", scopes=scopes)
 
 client = gspread.authorize(creds)

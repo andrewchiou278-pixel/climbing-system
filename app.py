@@ -87,17 +87,17 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 3. Google 試算表連線設定 (支援本機與雲端自動切換) ---
+# --- 3. Google 試算表連線設定 (萬能穩健版) ---
 scopes = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
 if "gcp_service_account" in st.secrets:
-    # 雲端環境：從 Streamlit Secrets 讀取
+    # 將 Secrets 直接轉為標準字典格式，確保私鑰格式不跑版
     creds_dict = dict(st.secrets["gcp_service_account"])
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
 else:
-    # 本地環境：讀取資料夾內的 credentials.json 檔案
     creds = Credentials.from_service_account_file("credentials.json", scopes=scopes)
 
 client = gspread.authorize(creds)

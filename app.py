@@ -86,19 +86,20 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. Google 試算表連線設定 ---
+# --- 3. Google 試算表連線設定 (支援本機與雲端自動切換) ---
 scopes = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
 ]
 
 if "gcp_service_account" in st.secrets:
-    creds_dict = dict(st.secrets["gcp_service_account"])
-    creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+    creds_dict = dict(st.secrets["gcp_service_account"])
+    creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
 else:
-    creds = Credentials.from_service_account_file("credentials.json", scopes=scopes)
+    creds = Credentials.from_service_account_file("credentials.json", scopes=scopes)
 
 client = gspread.authorize(creds)
+
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1uU5QiSpML3-vroTFrMVrzMu0rj8gMLYIsyekyYxSVME/edit?gid=1075932015#gid=1075932015" 
 spreadsheet = client.open_by_url(SHEET_URL)
 

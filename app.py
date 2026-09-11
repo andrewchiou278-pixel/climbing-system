@@ -93,13 +93,10 @@ scopes = [
 ]
 
 if "gcp_service_account" in st.secrets:
-    # 將 Secrets 轉為標準字典格式
+    # 直接讀取雲端 Secrets 字典
     creds_dict = dict(st.secrets["gcp_service_account"])
-    # 💡 終極修復：強制將文字的 \n 替換為真實的換行符號
-    creds_dict["private_key"] = creds_dict["private_key"].replace('\\n', '\n')
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
 else:
-    # 本地環境：讀取資料夾內的 credentials.json 檔案
     creds = Credentials.from_service_account_file("credentials.json", scopes=scopes)
 
 client = gspread.authorize(creds)

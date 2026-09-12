@@ -92,14 +92,16 @@ scopes = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-# 改用從 Streamlit Secrets 讀取憑證
-creds = Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"], scopes=scopes
-)
+# 將 Secrets 轉換為標準字典，並強制處理換行符號
+gcp_credentials = dict(st.secrets["gcp_service_account"])
+gcp_credentials["private_key"] = gcp_credentials["private_key"].replace("\\n", "\n")
+
+creds = Credentials.from_service_account_info(gcp_credentials, scopes=scopes)
 client = gspread.authorize(creds)
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1uU5QiSpML3-vroTFrMVrzMu0rj8gMLYIsyekyYxSVME/edit?gid=1075932015#gid=1075932015" 
 spreadsheet = client.open_by_url(SHEET_URL)
+
 # --- 4. Plotly Express 雷達圖繪製函式 ---
 def create_radar_chart(core, suspension, mobility):
     df = pd.DataFrame(dict(
